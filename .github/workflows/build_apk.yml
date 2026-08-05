@@ -50,7 +50,7 @@ jobs:
           EOF
           fi
 
-      - name: Préparation de la structure du projet
+      - name: Préparation et correction des configurations Android
         run: |
           if [ -f lib/main.dart ]; then
             cp lib/main.dart main_backup.dart
@@ -61,11 +61,17 @@ jobs:
             rm main_backup.dart
           fi
 
+      - name: Correctif Namespace & SDK Gradle
+        run: |
+          sed -i 's/compileSdkVersion.*/compileSdkVersion 34/g' android/app/build.gradle || true
+          sed -i 's/minSdkVersion.*/minSdkVersion 21/g' android/app/build.gradle || true
+          sed -i 's/targetSdkVersion.*/targetSdkVersion 34/g' android/app/build.gradle || true
+
       - name: Installation des dépendances
         run: flutter pub get
 
       - name: Compilation de l'APK Release
-        run: flutter build apk --release --no-tree-shake-icons
+        run: flutter build apk --release --no-tree-shake-icons --build-number=1
 
       - name: Sauvegarder l'APK pour téléchargement
         uses: actions/upload-artifact@v4
