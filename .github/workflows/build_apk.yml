@@ -24,8 +24,14 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Génération de la structure Android
-        run: flutter create . --platforms=android --org=com.cpa.cantine --overwrite
+      - name: Re-création du projet propre
+        run: |
+          mkdir temp_app
+          cd temp_app
+          flutter create . --platforms=android --org=com.cpa.cantine
+          cp -r android ../
+          cd ..
+          rm -rf temp_app
 
       - name: Installation des dépendances
         run: flutter pub get
