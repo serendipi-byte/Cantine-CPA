@@ -24,9 +24,15 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Initialisation du projet Flutter
+      - name: Sauvegarde du code main.dart
+        run: cp lib/main.dart main_backup.dart
+
+      - name: Initialisation de la structure Android
         run: |
           flutter create . --project-name cantine_cpa --platforms=android --org=com.cpa.cantine --overwrite
+
+      - name: Restauration du code main.dart
+        run: cp main_backup.dart lib/main.dart
 
       - name: Installation des dépendances
         run: flutter pub get
