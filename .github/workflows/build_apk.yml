@@ -26,7 +26,7 @@ jobs:
 
       - name: Initialisation du projet Flutter
         run: |
-          flutter create . --platforms=android --org=com.cpa.cantine --overwrite
+          flutter create . --project-name cantine_cpa --platforms=android --org=com.cpa.cantine --overwrite
 
       - name: Installation des dépendances
         run: flutter pub get
