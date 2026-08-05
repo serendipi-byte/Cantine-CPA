@@ -24,13 +24,45 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Nettoyage et Réparation du projet
+      - name: Création du fichier pubspec.yaml si absent
         run: |
-          flutter clean
-          flutter pub get
+          if [ ! -f pubspec.yaml ]; then
+            cat << 'EOF' > pubspec.yaml
+          name: cantine_cpa
+          description: Application Cantine CPA
+          publish_to: 'none'
+          version: 1.0.0+1
 
-      - name: Verification du projet Flutter
-        run: flutter analyze || true
+          environment:
+            sdk: '>=3.0.0 <4.0.0'
+
+          dependencies:
+            flutter:
+              sdk: flutter
+            cupertino_icons: ^1.0.8
+
+          dev_dependencies:
+            flutter_test:
+              sdk: flutter
+
+          flutter:
+            uses-material-design: true
+          EOF
+          fi
+
+      - name: Préparation de la structure du projet
+        run: |
+          if [ -f lib/main.dart ]; then
+            cp lib/main.dart main_backup.dart
+          fi
+          flutter create . --project-name cantine_cpa --platforms=android --org=com.cpa.cantine --overwrite
+          if [ -f main_backup.dart ]; then
+            cp main_backup.dart lib/main.dart
+            rm main_backup.dart
+          fi
+
+      - name: Installation des dépendances
+        run: flutter pub get
 
       - name: Compilation de l'APK Release
         run: flutter build apk --release --no-tree-shake-icons
