@@ -13,18 +13,26 @@ jobs:
       - name: Récupération du code
         uses: actions/checkout@v4
 
-      - name: Génération de la structure Flutter
-        run: |
-          mkdir -p lib
-          if [ ! -f pubspec.yaml ]; then
-            echo "pubspec manquant"
-          fi
-
-      - name: Compilation automatique APK
-        uses: bdlukaa/flutter-build-action@v1
+      - name: Configuration de Java
+        uses: actions/setup-java@v4
         with:
-          target: apk
-          project-root: '.'
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Configuration de Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Initialisation du projet Flutter
+        run: |
+          flutter create . --platforms=android --org=com.cpa.cantine --overwrite
+
+      - name: Installation des dépendances
+        run: flutter pub get
+
+      - name: Compilation de l'APK Android
+        run: flutter build apk --release --no-tree-shake-icons
 
       - name: Sauvegarder l'APK pour téléchargement
         uses: actions/upload-artifact@v4
