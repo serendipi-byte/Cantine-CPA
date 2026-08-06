@@ -24,10 +24,13 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Donner les permissions a Gradle
+        run: chmod +x android/gradlew || true
+
       - name: Installation des dépendances
         run: flutter pub get
 
-      - name: Compilation de l'APK (Mode Debug pour test)
+      - name: Compilation de l'APK (Mode Debug)
         run: flutter build apk --debug
 
       - name: Sauvegarder l'APK pour téléchargement
